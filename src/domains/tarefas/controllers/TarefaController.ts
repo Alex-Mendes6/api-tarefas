@@ -28,6 +28,7 @@ class TarefaController {
             } 
             const service = new TarefaService;
             const tarefa = service.findById(id);
+            return res.json(tarefa);
         } catch (error: any) {
             if (error.message === 'Tarefa não encontrada') {
                 return res.status(404).json({ erro: 'Tarefa não encontrada'});
