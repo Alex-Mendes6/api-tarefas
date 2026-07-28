@@ -32,11 +32,20 @@ class TarefaService {
     }
 
     update(id: string, nome?: string, concluida?: boolean) {
+        if (nome !== undefined && concluida !== undefined) {
+            
+        }
         const index = tarefas.findIndex((t: { id: string }) => t.id === id);
         if (index === -1) {
             throw new Error("Tarefa não encontrada");
         }
-        const novaTarefa = { id: tarefas[index].id, nome, descricao: tarefas[index].descricao, concluida };
+        let novaTarefa = tarefas[index];
+        if (nome !== undefined) {
+            novaTarefa = { ...novaTarefa, nome };
+        }
+        if (concluida !== undefined) {
+            novaTarefa = { ...novaTarefa, concluida };
+        }
         tarefas[index] = novaTarefa;
         return tarefas[index];
     }

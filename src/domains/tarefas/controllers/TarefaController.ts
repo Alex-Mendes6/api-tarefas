@@ -45,16 +45,15 @@ class TarefaController {
             if (!id || typeof id !== 'string') {
                 return res.status(400).json({ erro: 'ID inválido' });
             }
-            if (!nome && !concluida) {
-                return res.status(400).json({ erro: 'Nome e concluida ambos vazios'});
-            }
-
             const service = new TarefaService();
             const tarefa = service.update(id, nome, concluida);
             return res.status(200).json(tarefa);
         } catch (error: any) {
             if (error.message === 'Tarefa não encontrada') {
                 return res.status(404).json({ erro: 'Tarefa não encontrada'});
+            }
+            if (error.message === 'Ambos campos vazios') {
+                return res.status(400).json({ erro: 'Ambos campos vazios' });
             }
             return res.status(400).json({ erro: error.message });
         }
