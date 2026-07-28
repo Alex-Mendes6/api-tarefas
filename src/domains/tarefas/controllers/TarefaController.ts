@@ -36,6 +36,29 @@ class TarefaController {
             return res.status(400).json({ erro: error.message });
         }
     }
+
+    update(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const { nome, concluida } = req.body;
+
+            if (!id || typeof id !== 'string') {
+                return res.status(400).json({ erro: 'ID inválido' });
+            }
+            if (!nome && !concluida) {
+                return res.status(400).json({ erro: 'Nome e concluida ambos vazios'});
+            }
+
+            const service = new TarefaService();
+            const tarefa = service.update(id, nome, concluida);
+            return res.status(200).json(tarefa);
+        } catch (error: any) {
+            if (error.message === 'Tarefa não encontrada') {
+                return res.status(404).json({ erro: 'Tarefa não encontrada'});
+            }
+            return res.status(400).json({ erro: error.message });
+        }
+    }
 }
 
 export { TarefaController };

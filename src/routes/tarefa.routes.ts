@@ -10,4 +10,6 @@ tarefaRoutes.get('/', controller.list);
 
 tarefaRoutes.get('/:id', controller.findById);
 
+tarefaRoutes.put('/:id', controller.update);
+
 export { tarefaRoutes };
