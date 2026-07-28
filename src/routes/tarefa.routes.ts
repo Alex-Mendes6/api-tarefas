@@ -12,4 +12,6 @@ tarefaRoutes.get('/:id', controller.findById);
 
 tarefaRoutes.put('/:id', controller.update);
 
+tarefaRoutes.delete('/:id', controller.delete);
+
 export { tarefaRoutes };

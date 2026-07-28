@@ -33,7 +33,7 @@ class TarefaService {
 
     update(id: string, nome?: string, concluida?: boolean) {
         if (nome !== undefined && concluida !== undefined) {
-            
+
         }
         const index = tarefas.findIndex((t: { id: string }) => t.id === id);
         if (index === -1) {
@@ -48,6 +48,14 @@ class TarefaService {
         }
         tarefas[index] = novaTarefa;
         return tarefas[index];
+    }
+
+    delete(id: string) {
+        const index = tarefas.findIndex((t: { id: string }) => t.id === id);
+        if (index === -1) {
+            throw new Error("Tarefa não encontrada");
+        }
+        tarefas.splice(index);
     }
 }
 

@@ -22,13 +22,12 @@ class TarefaController {
     findById(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            // verificando se req.params enviou uma string
             if (!id || typeof id !== 'string') {
                 return res.status(400).json({ erro: 'ID inválido' });
             } 
             const service = new TarefaService;
             const tarefa = service.findById(id);
-            return res.json(tarefa);
+            return res.status(200).json(tarefa);
         } catch (error: any) {
             if (error.message === 'Tarefa não encontrada') {
                 return res.status(404).json({ erro: 'Tarefa não encontrada'});
@@ -54,6 +53,23 @@ class TarefaController {
             }
             if (error.message === 'Ambos campos vazios') {
                 return res.status(400).json({ erro: 'Ambos campos vazios' });
+            }
+            return res.status(400).json({ erro: error.message });
+        }
+    }
+
+    delete(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            if (!id || typeof id !== 'string') {
+                return res.status(400).json({ erro: 'ID inválido' });
+            } 
+            const service = new TarefaService;
+            service.delete(id);
+            return res.status(204);
+        } catch (error: any) {
+            if (error.message === 'Tarefa não encontrada') {
+                return res.status(404).json({ erro: 'Tarefa não encontrada'});
             }
             return res.status(400).json({ erro: error.message });
         }
