@@ -1,0 +1,31 @@
+{
+  "name": "api-tarefas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch --ignore node_modules src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex-Mendes6/api-tarefas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Alex-Mendes6/api-tarefas/issues"
+  },
+  "homepage": "https://github.com/Alex-Mendes6/api-tarefas#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
