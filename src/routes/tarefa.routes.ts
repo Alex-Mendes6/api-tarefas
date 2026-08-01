@@ -6,7 +6,7 @@ const controller = new TarefaController();
 
 tarefaRoutes.post('/', controller.create);
 
-tarefaRoutes.get('/', controller.list);
+tarefaRoutes.get('/', controller.getAll);
 
 tarefaRoutes.get('/:id', controller.findById);
 

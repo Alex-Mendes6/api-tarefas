@@ -1,61 +1,64 @@
+import { prisma } from "../../../config/prismaClient.js";
+
 let tarefas: any = [];
 interface ICriarTarefa {
-    nome: string;
+    title: string;
     descricao: string;
 }
 
 class TarefaService {
-    create({ nome, descricao }: ICriarTarefa) {
-        if (!nome) {
+    async create({ title, descricao }: ICriarTarefa) {
+        if (!title) {
             throw new Error("Nome da tarefa é obrigatório");
         }
         if (!descricao) {
             throw new Error("Descrição da tarefa é obrigatória");
         }
 
-        const novaTarefa = { id: Date.now().toString() + Math.random().toString().substring(2, 6), nome, descricao, concluida: false };
-        tarefas.push(novaTarefa);
+        const novaTarefa = await prisma.task.create({ data: { title, descricao }})
 
         return novaTarefa;
     }
 
-    list() {
-        return tarefas;
+    async getAll() {
+        const tasks = await prisma.task.findMany();
+        
+        return tasks;
     }
 
-    findById(id: string) {
-        const tarefa = tarefas.find((t: { id: string; }) => t.id === id);
-        if (!tarefa) {
-            throw new Error("Tarefa não encontrada");
-        }
-        return tarefa;
+    async findById(id: number) {
+        const task = await prisma.task.findUnique({ where: { id } });
+
+        return task;
     }
 
-    update(id: string, nome?: string, concluida?: boolean) {
-        if (nome !== undefined && concluida !== undefined) {
+    async update(id: number, title?: string, completed?: boolean, descricao?: string) {
+        if (title === undefined && completed === undefined && descricao === undefined) {
+            throw new Error('Todos os campos vazios');
+        }
 
-        }
-        const index = tarefas.findIndex((t: { id: string }) => t.id === id);
-        if (index === -1) {
-            throw new Error("Tarefa não encontrada");
-        }
-        let novaTarefa = tarefas[index];
-        if (nome !== undefined) {
-            novaTarefa = { ...novaTarefa, nome };
-        }
-        if (concluida !== undefined) {
-            novaTarefa = { ...novaTarefa, concluida };
-        }
-        tarefas[index] = novaTarefa;
-        return tarefas[index];
+        const task = await prisma.task.findUnique({ where: { id } });
+        if (!task) throw new Error('Tarefa não encontrada');
+        
+        const data: any = {};
+        if (title !== undefined) data.title = title;
+        if (completed !== undefined) data.completed = completed;
+        if (descricao !== undefined) data.descricao = descricao;
+
+        const updatedTask = await prisma.task.update({
+            where: { id },
+            data,
+        });
+
+        return updatedTask;
     }
 
-    delete(id: string) {
-        const index = tarefas.findIndex((t: { id: string }) => t.id === id);
-        if (index === -1) {
-            throw new Error("Tarefa não encontrada");
-        }
-        tarefas.splice(index);
+     async delete(id: number) {
+        const task = await prisma.task.findUnique({ where: { id } });
+        if (!task) throw new Error('Tarefa não encontrada');
+
+        await prisma.task.delete({ where: { id } });
+        return task;
     }
 }
 

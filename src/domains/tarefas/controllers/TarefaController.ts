@@ -1,33 +1,36 @@
 import type { Request, Response } from "express";
 import { TarefaService } from "../services/TarefaService.js";
+import { prisma } from "../../../config/prismaClient.js";
 
 class TarefaController {
-    create(req: Request, res: Response) {
+    async create(req: Request, res: Response) {
         try {
-            const { nome, descricao } = req.body;
+            const { title, descricao } = req.body;
             const service = new TarefaService();
-            const tarefa = service.create({ nome, descricao });
-            return res.status(201).json(tarefa);
+            const task = await service.create({ title, descricao });
+            return res.status(201).json(task);
         } catch (error: any) {
             return res.status(400).json({ erro: error.message });
         }
     }
 
-    list(req: Request, res: Response) {
+    async getAll(req: Request, res: Response) {
         const service = new TarefaService();
-        const tarefas = service.list();
-        return res.status(200).json(tarefas);
+        const tasks = await service.getAll();
+        return res.status(200).json(tasks);
     }
 
-    findById(req: Request, res: Response) {
+    async findById(req: Request, res: Response) {
         try {
-            const { id } = req.params;
-            if (!id || typeof id !== 'string') {
-                return res.status(400).json({ erro: 'ID inválido' });
-            } 
+            const id = Number(req.params.id);
             const service = new TarefaService;
-            const tarefa = service.findById(id);
-            return res.status(200).json(tarefa);
+            const task = await service.findById(id);
+
+            if (!task) {
+                return res.status(404).json({ erro: 'Tarefa não encontrada' });
+            }
+
+            return res.status(200).json(task);
         } catch (error: any) {
             if (error.message === 'Tarefa não encontrada') {
                 return res.status(404).json({ erro: 'Tarefa não encontrada'});
@@ -36,16 +39,13 @@ class TarefaController {
         }
     }
 
-    update(req: Request, res: Response) {
+    async update(req: Request, res: Response) {
         try {
-            const { id } = req.params;
-            const { nome, concluida } = req.body;
+            const id = Number(req.params.id);
+            const { title, completed, descricao } = req.body;
 
-            if (!id || typeof id !== 'string') {
-                return res.status(400).json({ erro: 'ID inválido' });
-            }
             const service = new TarefaService();
-            const tarefa = service.update(id, nome, concluida);
+            const tarefa = await service.update(id, title, completed, descricao);
             return res.status(200).json(tarefa);
         } catch (error: any) {
             if (error.message === 'Tarefa não encontrada') {
@@ -58,15 +58,13 @@ class TarefaController {
         }
     }
 
-    delete(req: Request, res: Response) {
+    async delete(req: Request, res: Response) {
         try {
-            const { id } = req.params;
-            if (!id || typeof id !== 'string') {
-                return res.status(400).json({ erro: 'ID inválido' });
-            } 
-            const service = new TarefaService;
-            service.delete(id);
-            return res.status(204);
+            const id = Number(req.params.id);
+
+            const service = new TarefaService();
+            await service.delete(id);
+            return res.status(204).send();
         } catch (error: any) {
             if (error.message === 'Tarefa não encontrada') {
                 return res.status(404).json({ erro: 'Tarefa não encontrada'});
